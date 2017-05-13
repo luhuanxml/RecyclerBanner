@@ -34,6 +34,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
@@ -146,7 +147,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         left = left_right;
         right = left_right;
         top = top_bottom;
-        bottom = top_bottom;
+       bottom = top_bottom;
         return this;
     }
 
@@ -342,6 +343,7 @@ public class RecyclerBanner<T> extends FrameLayout {
             return new DotHolder(dotView);
         }
 
+        //获得位置点亮对应的指示器
         void setIndex(int position) {
             index = position;
             notifyDataSetChanged();
