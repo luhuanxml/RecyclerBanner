@@ -50,11 +50,12 @@ public class RecyclerBanner<T> extends FrameLayout {
 
     private OnBannerItemClickListener<T> onBannerItemClickListener;
 
-    public void setOnBannerItemClickListener(OnBannerItemClickListener<T> onBannerItemClickListener) {
+    public RecyclerBanner<T> setOnBannerItemClickListener(OnBannerItemClickListener<T> onBannerItemClickListener) {
         this.onBannerItemClickListener = onBannerItemClickListener;
+        return this;
     }
 
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private RecyclerView dotRecycler;
     int currentPosition = 0;
     int dotCount;
@@ -69,9 +70,9 @@ public class RecyclerBanner<T> extends FrameLayout {
      * 不设置的情况下默认给出两个默认值
      */
     @DrawableRes
-    Integer lightDot = R.drawable.dot_light;
+    Integer lightDot;
     @DrawableRes
-    Integer normalDot = R.drawable.dot_normal;
+    Integer normalDot;
 
     /**
      * 指示器条背景
@@ -97,16 +98,29 @@ public class RecyclerBanner<T> extends FrameLayout {
      */
     int dotSize;
 
-    public void setDotLinebackgroud(Integer dotParentbackgroud) {
+    public RecyclerBanner<T> setDotLinebackgroud(Integer dotParentbackgroud) {
         this.dotParentbackgroud = dotParentbackgroud;
+        return this;
     }
 
-    public void setDotSize(int dotSize) {
+    /**
+     * dot 大小
+     *
+     * @param dotSize px
+     */
+    public RecyclerBanner<T> setDotSize(int dotSize) {
         this.dotSize = dotSize;
+        return this;
     }
 
-    public void setDotParentAlpha(Float dotParentAlpha) {
+    /**
+     * 设置指示器背景透明度
+     *
+     * @param dotParentAlpha 0f-1f
+     */
+    public RecyclerBanner<T> setDotParentAlpha(Float dotParentAlpha) {
         this.dotParentAlpha = dotParentAlpha;
+        return this;
     }
 
     /**
@@ -114,8 +128,9 @@ public class RecyclerBanner<T> extends FrameLayout {
      *
      * @param lightDot 样式资源
      */
-    public void setLightDot(@NonNull Integer lightDot) {
+    public RecyclerBanner<T> setLightDot(@NonNull Integer lightDot) {
         this.lightDot = lightDot;
+        return this;
     }
 
     /**
@@ -123,8 +138,9 @@ public class RecyclerBanner<T> extends FrameLayout {
      *
      * @param interval_time 时间 毫秒
      */
-    public void setInterval(int interval_time) {
+    public RecyclerBanner<T> setInterval(int interval_time) {
         interval = interval_time;
+        return this;
     }
 
     /**
@@ -132,18 +148,20 @@ public class RecyclerBanner<T> extends FrameLayout {
      *
      * @param normalDot 样式资源
      */
-    public void setNormalDot(@NonNull Integer normalDot) {
+    public RecyclerBanner<T> setNormalDot(@NonNull Integer normalDot) {
         this.normalDot = normalDot;
+        return this;
     }
 
     /**
      * dot与dot之间上下左右的间距Margin
      */
-    public void setDotMargin(@Px int left_right, @Px int top_bottom) {
+    public RecyclerBanner<T> setDotMargin(@Px int left_right, @Px int top_bottom) {
         left = left_right;
         right = left_right;
         top = top_bottom;
         bottom = top_bottom;
+        return this;
     }
 
     public RecyclerBanner(@NonNull Context context) {
@@ -172,14 +190,16 @@ public class RecyclerBanner<T> extends FrameLayout {
      */
     private void getArrs(@NonNull Context context, @Nullable AttributeSet attrs) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.RecyclerBanner);
-        left = typedArray.getInteger(R.styleable.RecyclerBanner_dot_marginleft, 5);
-        right = typedArray.getInteger(R.styleable.RecyclerBanner_dot_marginright, 5);
-        top = typedArray.getInteger(R.styleable.RecyclerBanner_dot_margintop, 15);
-        bottom = typedArray.getInteger(R.styleable.RecyclerBanner_dot_marginbottom, 15);
-        dotSize = typedArray.getInteger(R.styleable.RecyclerBanner_dot_size, 12);
+        left = typedArray.getDimensionPixelSize(R.styleable.RecyclerBanner_dot_marginleft, 5);
+        right = typedArray.getDimensionPixelSize(R.styleable.RecyclerBanner_dot_marginright, 5);
+        top = typedArray.getDimensionPixelSize(R.styleable.RecyclerBanner_dot_margintop, 15);
+        bottom = typedArray.getDimensionPixelSize(R.styleable.RecyclerBanner_dot_marginbottom, 15);
+        dotSize = typedArray.getDimensionPixelSize(R.styleable.RecyclerBanner_dot_size, 12);
         dotParentbackgroud = typedArray.getResourceId(R.styleable.RecyclerBanner_dot_parentbackground, android.R.color.black);
         dotParentAlpha = typedArray.getFloat(R.styleable.RecyclerBanner_dot_parentalpha, 0.5f);
         interval = typedArray.getInteger(R.styleable.RecyclerBanner_interval, 2000);
+        lightDot = typedArray.getResourceId(R.styleable.RecyclerBanner_light_dot_src, R.drawable.dot_light);
+        normalDot = typedArray.getResourceId(R.styleable.RecyclerBanner_normal_dot_src, R.drawable.dot_normal);
         typedArray.recycle();
     }
 
@@ -244,9 +264,10 @@ public class RecyclerBanner<T> extends FrameLayout {
         addView(linearLayout, linearParams);
     }
 
-    public void setImages(List<T> images) {
+    public RecyclerBanner<T> setImages(List<T> images) {
         adapter.setImgUrls(images);
         dotCount = images.size();
+        return this;
     }
 
     /**

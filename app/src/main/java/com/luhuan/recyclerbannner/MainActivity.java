@@ -3,11 +3,14 @@ package com.luhuan.recyclerbannner;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.R.id.list;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerBanner<Integer> banner;
@@ -16,8 +19,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        banner= (RecyclerBanner<Integer>) findViewById(R.id.banner);
-        List<Integer> list=new ArrayList<>();
+        banner = (RecyclerBanner<Integer>) findViewById(R.id.banner);
+        List<Integer> list = new ArrayList<>();
         list.add(R.mipmap.img01);
         list.add(R.mipmap.img02);
         list.add(R.mipmap.img03);
@@ -27,15 +30,18 @@ public class MainActivity extends AppCompatActivity {
         list.add(R.mipmap.img07);
         list.add(R.mipmap.img08);
         list.add(R.mipmap.img09);
-        banner.setImages(list);
-        banner.startAuto();
-        banner.setOnBannerItemClickListener(new RecyclerBanner.OnBannerItemClickListener<Integer>() {
-            @Override
-            public void onBannerItemClick(int itemPosition, Integer integer) {
-                Toast.makeText(MainActivity.this, itemPosition+"", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this,Main2Activity.class));
-            }
-        });
+        banner.setDotSize(50)
+                .setInterval(500)
+                .setDotMargin(30, 30)
+                .setImages(list)
+                .setOnBannerItemClickListener(new RecyclerBanner.OnBannerItemClickListener<Integer>() {
+                    @Override
+                    public void onBannerItemClick(int itemPosition, Integer integer) {
+                        Toast.makeText(MainActivity.this, itemPosition + "", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(MainActivity.this, Main2Activity.class));
+                    }
+                })
+                .startAuto();
     }
 
     @Override

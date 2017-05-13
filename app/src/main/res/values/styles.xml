@@ -10,11 +10,11 @@
 
     <declare-styleable name="RecyclerBanner">
         <attr name="interval" format="integer" />
-        <attr name="dot_size" format="integer" />
-        <attr name="dot_marginleft" format="integer" />
-        <attr name="dot_marginright" format="integer" />
-        <attr name="dot_margintop" format="integer" />
-        <attr name="dot_marginbottom" format="integer" />
+        <attr name="dot_size" format="dimension" />
+        <attr name="dot_marginleft" format="dimension" />
+        <attr name="dot_marginright" format="dimension" />
+        <attr name="dot_margintop" format="dimension" />
+        <attr name="dot_marginbottom" format="dimension" />
         <attr name="dot_parentbackground" format="reference" />
         <attr name="dot_parentalpha" format="float" />
         <attr name="light_dot_src" format="reference" />

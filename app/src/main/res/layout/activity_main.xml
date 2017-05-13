@@ -14,11 +14,11 @@
         app:interval="3000"
         app:dot_parentbackground="@android:color/black"
         app:dot_parentalpha="0.8"
-        app:dot_size="20"
-        app:dot_marginbottom="20"
-        app:dot_margintop="20"
-        app:dot_marginleft="20"
-        app:dot_marginright="20">
+        app:dot_size="6dp"
+        app:dot_marginbottom="6dp"
+        app:dot_margintop="6dp"
+        app:dot_marginleft="6dp"
+        app:dot_marginright="6dp">
 
     </com.luhuan.recyclerbannner.RecyclerBanner>
 
