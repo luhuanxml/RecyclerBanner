@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -61,7 +62,6 @@ public class RecyclerBanner<T> extends FrameLayout {
     private Disposable autoDisposable;
 
     boolean isAuto = true; //默认开启轮播图
-    private LinearSnapHelper snapHelper;
     private BannerAdapter adapter;
 
     /**
@@ -71,7 +71,7 @@ public class RecyclerBanner<T> extends FrameLayout {
     @DrawableRes
     Integer lightDot = R.drawable.dot_light;
     @DrawableRes
-    Integer normalDot= R.drawable.dot_normal;
+    Integer normalDot = R.drawable.dot_normal;
 
     /**
      * 指示器条背景
@@ -90,7 +90,7 @@ public class RecyclerBanner<T> extends FrameLayout {
     /**
      * dot margin
      */
-    int left ,right,top,bottom;
+    int left, right, top, bottom;
 
     /**
      * dot size
@@ -111,6 +111,7 @@ public class RecyclerBanner<T> extends FrameLayout {
 
     /**
      * 设置点亮dot样式
+     *
      * @param lightDot 样式资源
      */
     public void setLightDot(@NonNull Integer lightDot) {
@@ -119,6 +120,7 @@ public class RecyclerBanner<T> extends FrameLayout {
 
     /**
      * 轮播间隔时间
+     *
      * @param interval_time 时间 毫秒
      */
     public void setInterval(int interval_time) {
@@ -127,6 +129,7 @@ public class RecyclerBanner<T> extends FrameLayout {
 
     /**
      * 设置普通dot样式
+     *
      * @param normalDot 样式资源
      */
     public void setNormalDot(@NonNull Integer normalDot) {
@@ -136,11 +139,11 @@ public class RecyclerBanner<T> extends FrameLayout {
     /**
      * dot与dot之间上下左右的间距Margin
      */
-    public void setDotMargin(@Px int left_right, @Px int top_bottom){
-        left=left_right;
-        right=left_right;
-        top=top_bottom;
-        bottom=top_bottom;
+    public void setDotMargin(@Px int left_right, @Px int top_bottom) {
+        left = left_right;
+        right = left_right;
+        top = top_bottom;
+        bottom = top_bottom;
     }
 
     public RecyclerBanner(@NonNull Context context) {
@@ -149,13 +152,13 @@ public class RecyclerBanner<T> extends FrameLayout {
 
     public RecyclerBanner(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        getArrs(context,attrs);
+        getArrs(context, attrs);
         init();
     }
 
     public RecyclerBanner(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        getArrs(context,attrs);
+        getArrs(context, attrs);
         init();
     }
 
@@ -163,19 +166,20 @@ public class RecyclerBanner<T> extends FrameLayout {
         initBanner();
         initDots();
     }
+
     /**
      * 自定义控件加属性
      */
-    private void getArrs(@NonNull Context context, @Nullable AttributeSet attrs){
-        TypedArray typedArray=context.obtainStyledAttributes(attrs,R.styleable.RecyclerBanner);
-        left=typedArray.getInteger(R.styleable.RecyclerBanner_dot_marginleft,5);
-        right=typedArray.getInteger(R.styleable.RecyclerBanner_dot_marginright,5);
-        top=typedArray.getInteger(R.styleable.RecyclerBanner_dot_margintop,15);
-        bottom=typedArray.getInteger(R.styleable.RecyclerBanner_dot_marginbottom,15);
-        dotSize=typedArray.getInteger(R.styleable.RecyclerBanner_dot_size,12);
-        dotParentbackgroud=typedArray.getResourceId(R.styleable.RecyclerBanner_dot_parentbackground,android.R.color.black);
-        dotParentAlpha=typedArray.getFloat(R.styleable.RecyclerBanner_dot_parentalpha,0.5f);
-        interval=typedArray.getInteger(R.styleable.RecyclerBanner_interval,2000);
+    private void getArrs(@NonNull Context context, @Nullable AttributeSet attrs) {
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.RecyclerBanner);
+        left = typedArray.getInteger(R.styleable.RecyclerBanner_dot_marginleft, 5);
+        right = typedArray.getInteger(R.styleable.RecyclerBanner_dot_marginright, 5);
+        top = typedArray.getInteger(R.styleable.RecyclerBanner_dot_margintop, 15);
+        bottom = typedArray.getInteger(R.styleable.RecyclerBanner_dot_marginbottom, 15);
+        dotSize = typedArray.getInteger(R.styleable.RecyclerBanner_dot_size, 12);
+        dotParentbackgroud = typedArray.getResourceId(R.styleable.RecyclerBanner_dot_parentbackground, android.R.color.black);
+        dotParentAlpha = typedArray.getFloat(R.styleable.RecyclerBanner_dot_parentalpha, 0.5f);
+        interval = typedArray.getInteger(R.styleable.RecyclerBanner_interval, 2000);
         typedArray.recycle();
     }
 
@@ -183,15 +187,15 @@ public class RecyclerBanner<T> extends FrameLayout {
      * 初始化轮播recyclerview
      */
     private void initBanner() {
-        snapHelper = new LinearSnapHelper();
         recyclerView = new RecyclerView(getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setBackgroundColor(Color.WHITE);
-        List<T> images=new ArrayList<>();
+        List<T> images = new ArrayList<>();
         adapter = new BannerAdapter(images, getContext());
         recyclerView.setAdapter(adapter);
         LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        snapHelper.attachToRecyclerView(recyclerView);
+        PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
+        pagerSnapHelper.attachToRecyclerView(recyclerView);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -240,9 +244,9 @@ public class RecyclerBanner<T> extends FrameLayout {
         addView(linearLayout, linearParams);
     }
 
-    public void setImages(List<T> images){
+    public void setImages(List<T> images) {
         adapter.setImgUrls(images);
-        dotCount=images.size();
+        dotCount = images.size();
     }
 
     /**
@@ -271,7 +275,7 @@ public class RecyclerBanner<T> extends FrameLayout {
      */
     private void startPlaying() {
         if (isAuto)
-            autoDisposable = Observable.interval(interval,interval, TimeUnit.MILLISECONDS).subscribeOn(AndroidSchedulers.mainThread())
+            autoDisposable = Observable.interval(interval, interval, TimeUnit.MILLISECONDS).subscribeOn(AndroidSchedulers.mainThread())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Long>() {
                         @Override
                         public void accept(@io.reactivex.annotations.NonNull Long aLong) throws Exception {
@@ -310,8 +314,9 @@ public class RecyclerBanner<T> extends FrameLayout {
             holder.itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "onClick: "+position);
-                    if (onBannerItemClickListener!=null) onBannerItemClickListener.onBannerItemClick(position,imgUrls.get(position));
+                    Log.d(TAG, "onClick: " + position);
+                    if (onBannerItemClickListener != null)
+                        onBannerItemClickListener.onBannerItemClick(position, imgUrls.get(position));
                 }
             });
         }
@@ -369,7 +374,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         }
     }
 
-    public interface OnBannerItemClickListener<T>{
+    public interface OnBannerItemClickListener<T> {
         void onBannerItemClick(int itemPosition, T t);
     }
 }
