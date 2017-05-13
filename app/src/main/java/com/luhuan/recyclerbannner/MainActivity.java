@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         list.add(R.mipmap.img08);
         list.add(R.mipmap.img09);
         banner.setImages(list);
+        banner.startAuto();
         banner.setOnBannerItemClickListener(new RecyclerBanner.OnBannerItemClickListener<Integer>() {
             @Override
             public void onBannerItemClick(int itemPosition, Integer integer) {
