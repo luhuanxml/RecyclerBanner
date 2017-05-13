@@ -32,6 +32,7 @@
         list.add(R.mipmap.img08);
         list.add(R.mipmap.img09);
         banner.setImages(list);
+        banner.startAuto();
         //item点击事件
         banner.setOnBannerItemClickListener(new RecyclerBanner.OnBannerItemClickListener<Integer>() {
             @Override
@@ -40,7 +41,8 @@
                 startActivity(new Intent(MainActivity.this,Main2Activity.class));
             }
         });
-         @Override
+    //当然 你也可以在onStart()中用。
+    @Override
     protected void onRestart() {
         super.onRestart();
         banner.startAuto();
@@ -50,7 +52,14 @@
     protected void onPause() {
         super.onPause();
         banner.stopAuto();
-    }```
+    }
+
+
+```
+
+
+    
+> 就一个类，就不搞什么引用了，如果是一个简单的banner，可以直接用这个。
  
 
         
