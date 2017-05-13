@@ -17,8 +17,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         banner= (RecyclerBanner<Integer>) findViewById(R.id.banner);
-        banner.setInterval(2000);
-        banner.startAuto();
         List<Integer> list=new ArrayList<>();
         list.add(R.mipmap.img01);
         list.add(R.mipmap.img02);

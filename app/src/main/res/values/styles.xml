@@ -15,7 +15,7 @@
         <attr name="dot_marginright" format="integer" />
         <attr name="dot_margintop" format="integer" />
         <attr name="dot_marginbottom" format="integer" />
-        <attr name="dot_parentbackground" format="float" />
+        <attr name="dot_parentbackground" format="reference" />
         <attr name="dot_parentalpha" format="float" />
         <attr name="light_dot_src" format="reference" />
         <attr name="normal_dot_src" format="reference" />

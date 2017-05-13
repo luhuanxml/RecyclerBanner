@@ -173,7 +173,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         top=typedArray.getInteger(R.styleable.RecyclerBanner_dot_margintop,15);
         bottom=typedArray.getInteger(R.styleable.RecyclerBanner_dot_marginbottom,15);
         dotSize=typedArray.getInteger(R.styleable.RecyclerBanner_dot_size,12);
-        dotParentbackgroud=typedArray.getResourceId(R.styleable.RecyclerBanner_dot_parentalpha,android.R.color.black);
+        dotParentbackgroud=typedArray.getResourceId(R.styleable.RecyclerBanner_dot_parentbackground,android.R.color.black);
         dotParentAlpha=typedArray.getFloat(R.styleable.RecyclerBanner_dot_parentalpha,0.5f);
         interval=typedArray.getInteger(R.styleable.RecyclerBanner_interval,2000);
         typedArray.recycle();
