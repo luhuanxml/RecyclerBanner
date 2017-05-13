@@ -10,11 +10,11 @@
         app:interval="3000"
         app:dot_parentbackground="@android:color/black"
         app:dot_parentalpha="0.8"
-        app:dot_size="20"
-        app:dot_marginbottom="20"
-        app:dot_margintop="20"
-        app:dot_marginleft="20"
-        app:dot_marginright="20"/>
+        app:dot_size="6dp"
+        app:dot_marginbottom="6dp"
+        app:dot_margintop="6dp"
+        app:dot_marginleft="6dp"
+        app:dot_marginright="6dp">
 ```
 
 使用
@@ -41,6 +41,22 @@
                 startActivity(new Intent(MainActivity.this,Main2Activity.class));
             }
         });
+        
+        //或者直接链式调用
+        banner.setDotSize(50)
+                .setInterval(500)
+                .setDotMargin(30, 30)
+                .setImages(list)
+                .setOnBannerItemClickListener(new RecyclerBanner.OnBannerItemClickListener<Integer>() {
+                    @Override
+                    public void onBannerItemClick(int itemPosition, Integer integer) {
+                        Toast.makeText(MainActivity.this, itemPosition + "", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(MainActivity.this, Main2Activity.class));
+                    }
+                })
+                .startAuto();
+    
+    //在相应的生命周期进行轮播的开启和关闭
     //当然 你也可以在onStart()中用。
     @Override
     protected void onRestart() {
