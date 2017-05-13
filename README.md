@@ -52,7 +52,10 @@
     protected void onPause() {
         super.onPause();
         banner.stopAuto();
-    }```
+    }
+    ```
+    
+> 就一个类，就不搞什么引用了，如果是一个简单的banner，可以直接用这个。
  
 
         
