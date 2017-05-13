@@ -32,6 +32,7 @@
         list.add(R.mipmap.img08);
         list.add(R.mipmap.img09);
         banner.setImages(list);
+        banner.startAuto();
         //item点击事件
         banner.setOnBannerItemClickListener(new RecyclerBanner.OnBannerItemClickListener<Integer>() {
             @Override
@@ -40,7 +41,8 @@
                 startActivity(new Intent(MainActivity.this,Main2Activity.class));
             }
         });
-         @Override
+    //当然 你也可以在onStart()中用。
+    @Override
     protected void onRestart() {
         super.onRestart();
         banner.startAuto();
