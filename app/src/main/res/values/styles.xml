@@ -1,0 +1,24 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <declare-styleable name="RecyclerBanner">
+        <attr name="interval" format="integer" />
+        <attr name="dot_size" format="integer" />
+        <attr name="dot_marginleft" format="integer" />
+        <attr name="dot_marginright" format="integer" />
+        <attr name="dot_margintop" format="integer" />
+        <attr name="dot_marginbottom" format="integer" />
+        <attr name="dot_parentbackground" format="float" />
+        <attr name="dot_parentalpha" format="float" />
+        <attr name="light_dot_src" format="reference" />
+        <attr name="normal_dot_src" format="reference" />
+    </declare-styleable>
+
+</resources>
