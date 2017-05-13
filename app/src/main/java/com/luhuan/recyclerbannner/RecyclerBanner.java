@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -41,13 +40,13 @@ import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 /**
  * Created by 鲁欢 on 2017/5/13 0013.
  * Banner由两个recyclerview组成
- * 1 图片
- * 2 指示器(LinearLayout+RecyclerView)
+ * 1 图片  2 指示器(LinearLayout+RecyclerView)
  */
 
 public class RecyclerBanner<T> extends FrameLayout {
     private static final String TAG = "RecyclerBanner";
 
+    //item点击事件监听
     private OnBannerItemClickListener<T> onBannerItemClickListener;
 
     public RecyclerBanner<T> setOnBannerItemClickListener(OnBannerItemClickListener<T> onBannerItemClickListener) {
@@ -56,14 +55,14 @@ public class RecyclerBanner<T> extends FrameLayout {
     }
 
     private RecyclerView recyclerView;
-    private RecyclerView dotRecycler;
-    int currentPosition = 0;
-    int dotCount;
+    private BannerAdapter adapter;
     private DotAdapter dotAdapter;
     private Disposable autoDisposable;
 
-    boolean isAuto = true; //默认开启轮播图
-    private BannerAdapter adapter;
+    //当前位置
+    int currentPosition = 0;
+    //指示器dot数量
+    int dotCount;
 
     /**
      * 提供给开发者自己定义dot样式的权力
@@ -74,39 +73,34 @@ public class RecyclerBanner<T> extends FrameLayout {
     @DrawableRes
     Integer normalDot;
 
-    /**
-     * 指示器条背景
-     */
+    //指示器条背景 仅限颜色资源
     @ColorRes
-    Integer dotParentbackgroud;
-    /**
-     * 指示器条透明度
-     */
-    Float dotParentAlpha;
+    private Integer dotParentbackgroud;
+
+    //指示器条透明度
+    private Float dotParentAlpha;
+
+    //自动轮播间隔时间 默认2000毫秒
+    int interval;
+
+    //指示器左右上下margin
+    private int left, right, top, bottom;
+
+    //指示器 dot大小
+    private int dotSize;
+
+    boolean isAuto = false; //默认不开启轮播图
 
     /**
-     * 轮播时间间隔
+     * @param dotParentbackgroud 指示器条的背景色
      */
-    int interval;//自动轮播间隔时间 默认2000毫秒
-    /**
-     * dot margin
-     */
-    int left, right, top, bottom;
-
-    /**
-     * dot size
-     */
-    int dotSize;
-
-    public RecyclerBanner<T> setDotLinebackgroud(Integer dotParentbackgroud) {
+    public RecyclerBanner<T> setDotLinebackgroud(@ColorRes Integer dotParentbackgroud) {
         this.dotParentbackgroud = dotParentbackgroud;
         return this;
     }
 
     /**
-     * dot 大小
-     *
-     * @param dotSize px
+     * @param dotSize px  dot 大小
      */
     public RecyclerBanner<T> setDotSize(int dotSize) {
         this.dotSize = dotSize;
@@ -114,9 +108,7 @@ public class RecyclerBanner<T> extends FrameLayout {
     }
 
     /**
-     * 设置指示器背景透明度
-     *
-     * @param dotParentAlpha 0f-1f
+     * @param dotParentAlpha 0f-1f  设置指示器背景透明度
      */
     public RecyclerBanner<T> setDotParentAlpha(Float dotParentAlpha) {
         this.dotParentAlpha = dotParentAlpha;
@@ -124,9 +116,7 @@ public class RecyclerBanner<T> extends FrameLayout {
     }
 
     /**
-     * 设置点亮dot样式
-     *
-     * @param lightDot 样式资源
+     * @param lightDot 样式资源 设置点亮dot样式
      */
     public RecyclerBanner<T> setLightDot(@NonNull Integer lightDot) {
         this.lightDot = lightDot;
@@ -134,9 +124,7 @@ public class RecyclerBanner<T> extends FrameLayout {
     }
 
     /**
-     * 轮播间隔时间
-     *
-     * @param interval_time 时间 毫秒
+     * @param interval_time 时间 毫秒 轮播间隔时间
      */
     public RecyclerBanner<T> setInterval(int interval_time) {
         interval = interval_time;
@@ -144,9 +132,7 @@ public class RecyclerBanner<T> extends FrameLayout {
     }
 
     /**
-     * 设置普通dot样式
-     *
-     * @param normalDot 样式资源
+     * @param normalDot 样式资源 设置普通dot样式
      */
     public RecyclerBanner<T> setNormalDot(@NonNull Integer normalDot) {
         this.normalDot = normalDot;
@@ -211,34 +197,24 @@ public class RecyclerBanner<T> extends FrameLayout {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setBackgroundColor(Color.WHITE);
         List<T> images = new ArrayList<>();
-        adapter = new BannerAdapter(images, getContext());
+        adapter = new BannerAdapter(images);
         recyclerView.setAdapter(adapter);
-        LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(recyclerView);
+        LayoutParams recyclerParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                int position = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
-                if (position > -1) {
-                    currentPosition = position;
-                    dotAdapter.setIndex(currentPosition);
-                }
+                currentPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+                dotAdapter.setIndex(currentPosition);
             }
 
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                Log.d(TAG, "onScrollStateChanged: " + newState);
-                //手放上去开始滑动
-                if (newState == SCROLL_STATE_DRAGGING) {
-                    stopAuto();
-                }
-                //滑动停止
-                else if (newState == SCROLL_STATE_IDLE) {
-                    startAuto();
-                }
+                if (newState == SCROLL_STATE_DRAGGING) stopAuto();/* 手放上去开始滑动 */
+                else if (newState == SCROLL_STATE_IDLE) startAuto();/* 滑动停止 */
             }
         });
         addView(recyclerView, recyclerParams);
@@ -248,16 +224,16 @@ public class RecyclerBanner<T> extends FrameLayout {
      * 初始化指示器recyclerview
      */
     private void initDots() {
-        dotRecycler = new RecyclerView(getContext());
+        RecyclerView dotRecycler = new RecyclerView(getContext());
         dotRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        LayoutParams dotParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LayoutParams dotParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         dotParams.gravity = Gravity.CENTER;
         dotAdapter = new DotAdapter();
         dotRecycler.setAdapter(dotAdapter);
         LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setGravity(Gravity.CENTER);
         linearLayout.addView(dotRecycler, dotParams);
-        LayoutParams linearParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LayoutParams linearParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         linearParams.gravity = Gravity.BOTTOM;
         linearLayout.setBackgroundColor(getResources().getColor(dotParentbackgroud));
         linearLayout.setAlpha(dotParentAlpha);
@@ -311,14 +287,12 @@ public class RecyclerBanner<T> extends FrameLayout {
 
     class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerHolder> {
         private List<T> imgUrls;
-        private Context mContext;
 
-        public BannerAdapter(List<T> imgUrls, Context mContext) {
+        BannerAdapter(List<T> imgUrls) {
             this.imgUrls = imgUrls;
-            this.mContext = mContext;
         }
 
-        public void setImgUrls(List<T> imgUrls) {
+        void setImgUrls(List<T> imgUrls) {
             this.imgUrls = imgUrls;
             notifyDataSetChanged();
         }
@@ -331,11 +305,10 @@ public class RecyclerBanner<T> extends FrameLayout {
 
         @Override
         public void onBindViewHolder(BannerHolder holder, @SuppressLint("RecyclerView") final int position) {
-            Glide.with(mContext).load(imgUrls.get(position)).into(holder.imgview);
+            Glide.with(getContext()).load(imgUrls.get(position)).into(holder.imgview);
             holder.itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "onClick: " + position);
                     if (onBannerItemClickListener != null)
                         onBannerItemClickListener.onBannerItemClick(position, imgUrls.get(position));
                 }
@@ -376,11 +349,7 @@ public class RecyclerBanner<T> extends FrameLayout {
 
         @Override
         public void onBindViewHolder(DotHolder holder, int position) {
-            if (position == index) {
-                holder.itemView.setBackground(getResources().getDrawable(lightDot));
-            } else {
-                holder.itemView.setBackground(getResources().getDrawable(normalDot));
-            }
+            holder.itemView.setBackground(position == index ? getResources().getDrawable(lightDot) : getResources().getDrawable(normalDot));
         }
 
         @Override
