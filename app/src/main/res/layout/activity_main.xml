@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         app:interval="3000"
-        app:dot_parentbackground="@android:color/holo_blue_light"
+        app:dot_parentbackground="@android:color/black"
         app:dot_parentalpha="0.8"
         app:dot_size="20"
         app:dot_marginbottom="20"
