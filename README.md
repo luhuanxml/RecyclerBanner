@@ -3,8 +3,10 @@
 > 其实就一个类。只不过习惯性的用了rxjava做自动播放操作，你可以把class和 attrs复制过去用。
 
 gradle
+```
 maven { url 'https://jitpack.io' }
 compile 'com.github.luhuanxml:RecyclerBanner:v1.0.0'
+```
 
 布局
 ```
