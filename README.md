@@ -1,5 +1,10 @@
 # RecyclerBannner
 纯recyclerview实现banner
+> 其实就一个类。只不过习惯性的用了rxjava做自动播放操作，你可以把class和 attrs复制过去用。
+
+gradle
+maven { url 'https://jitpack.io' }
+compile 'com.github.luhuanxml:RecyclerBanner:v1.0.0'
 
 布局
 ```
@@ -72,10 +77,5 @@
 
 
 ```
-
-
-    
-> 就一个类，就不搞什么引用了，如果是一个简单的banner，可以直接用这个。
-> 当然也可以使用网络引用
 
         
