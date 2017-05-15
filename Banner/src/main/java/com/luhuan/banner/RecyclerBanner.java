@@ -351,7 +351,7 @@ public class RecyclerBanner<T> extends FrameLayout {
 
         @Override
         public void onBindViewHolder(DotHolder holder, int position) {
-            holder.itemView.setBackground(position == index ? getResources().getDrawable(lightDot) : getResources().getDrawable(normalDot));
+            holder.itemView.setBackgroundResource(position == index ? lightDot:normalDot);
         }
 
         @Override
