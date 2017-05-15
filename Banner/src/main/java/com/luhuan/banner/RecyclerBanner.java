@@ -289,7 +289,7 @@ public class RecyclerBanner<T> extends FrameLayout {
                     });
     }
 
-    class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerHolder> {
+    private class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerHolder> {
         private List<T> imgUrls;
 
         BannerAdapter(List<T> imgUrls) {
@@ -339,7 +339,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         }
     }
 
-    class DotAdapter extends RecyclerView.Adapter<DotAdapter.DotHolder> {
+    private class DotAdapter extends RecyclerView.Adapter<DotAdapter.DotHolder> {
         int index;
 
         @Override
