@@ -1,4 +1,4 @@
-package com.luhuan.recyclerbannner;
+package com.luhuan.simple;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

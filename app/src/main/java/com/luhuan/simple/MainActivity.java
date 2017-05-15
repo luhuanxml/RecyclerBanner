@@ -1,16 +1,14 @@
-package com.luhuan.recyclerbannner;
+package com.luhuan.simple;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
 import android.widget.Toast;
+
+import com.luhuan.banner.RecyclerBanner;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.R.id.list;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerBanner<Integer> banner;

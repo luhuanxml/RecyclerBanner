@@ -1,4 +1,4 @@
-package com.luhuan.recyclerbannner;
+package com.luhuan.banner;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,9 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -34,7 +32,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
@@ -214,8 +211,8 @@ public class RecyclerBanner<T> extends FrameLayout {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == SCROLL_STATE_DRAGGING) stopAuto();/* 手放上去开始滑动 */
-                else if (newState == SCROLL_STATE_IDLE) startAuto();/* 滑动停止 */
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) stopAuto();/* 手放上去开始滑动 */
+                else if (newState == RecyclerView.SCROLL_STATE_IDLE) startAuto();/* 滑动停止 */
             }
         });
         addView(recyclerView, recyclerParams);
@@ -300,8 +297,11 @@ public class RecyclerBanner<T> extends FrameLayout {
 
         @Override
         public BannerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_img, parent, false);
-            return new BannerHolder(itemView);
+            ImageView imageView=new ImageView(parent.getContext());
+            LayoutParams layoutParams=new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            imageView.setLayoutParams(layoutParams);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            return new BannerHolder(imageView);
         }
 
         @Override
@@ -326,7 +326,7 @@ public class RecyclerBanner<T> extends FrameLayout {
 
             BannerHolder(View itemView) {
                 super(itemView);
-                imgview = (ImageView) itemView.findViewById(R.id.imgview);
+                imgview = (ImageView) itemView;
             }
         }
     }

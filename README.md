@@ -3,7 +3,7 @@
 
 布局
 ```
-<com.luhuan.recyclerbannner.RecyclerBanner
+<com.luhuan.banner.RecyclerBanner
         android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -76,6 +76,6 @@
 
     
 > 就一个类，就不搞什么引用了，如果是一个简单的banner，可以直接用这个。
- 
+> 当然也可以使用网络引用
 
         

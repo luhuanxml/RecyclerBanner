@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.luhuan.recyclerbannner.MainActivity">
+    tools:context="com.luhuan.simple.MainActivity">
 
-    <com.luhuan.recyclerbannner.RecyclerBanner
+    <com.luhuan.banner.RecyclerBanner
         android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -20,6 +20,6 @@
         app:dot_marginleft="6dp"
         app:dot_marginright="6dp">
 
-    </com.luhuan.recyclerbannner.RecyclerBanner>
+    </com.luhuan.banner.RecyclerBanner>
 
 </LinearLayout>
