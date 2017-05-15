@@ -5,7 +5,8 @@
 gradle
 ```
 maven { url 'https://jitpack.io' }
-compile 'com.github.luhuanxml:RecyclerBanner:v1.0.0'
+compile 'com.github.luhuanxml:RecyclerBanner:v1.0.0'  //自动轮播图片切换闪跳
+ compile 'com.github.luhuanxml:RecyclerBanner:v1.0.1'  //自动轮播图片从左往右平滑移动
 ```
 
 布局
