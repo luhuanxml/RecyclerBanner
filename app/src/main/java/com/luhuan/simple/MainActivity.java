@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         list.add(R.mipmap.img08);
         list.add(R.mipmap.img09);
         banner.setDotSize(50)
-                .setInterval(500)
+                .setInterval(2000)
                 .setDotMargin(30, 30)
                 .setImages(list)
                 .setOnBannerItemClickListener(new RecyclerBanner.OnBannerItemClickListener<Integer>() {

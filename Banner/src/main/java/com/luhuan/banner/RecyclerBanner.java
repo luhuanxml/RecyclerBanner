@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
@@ -11,9 +12,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -141,7 +145,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         left = left_right;
         right = left_right;
         top = top_bottom;
-       bottom = top_bottom;
+        bottom = top_bottom;
         return this;
     }
 
@@ -189,7 +193,8 @@ public class RecyclerBanner<T> extends FrameLayout {
      */
     private void initBanner() {
         recyclerView = new RecyclerView(getContext());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        ScrollSpeedLinearLayoutManger linearLayoutManager = new ScrollSpeedLinearLayoutManger(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setBackgroundColor(Color.WHITE);
         List<T> images = new ArrayList<>();
         adapter = new BannerAdapter(images);
@@ -267,14 +272,18 @@ public class RecyclerBanner<T> extends FrameLayout {
      */
     private void startPlaying() {
         if (isAuto)
-            autoDisposable = Observable.interval(interval, interval, TimeUnit.MILLISECONDS).subscribeOn(AndroidSchedulers.mainThread())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Long>() {
+            autoDisposable = Observable.interval(interval, interval, TimeUnit.MILLISECONDS)
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Long>() {
                         @Override
                         public void accept(@io.reactivex.annotations.NonNull Long aLong) throws Exception {
                             if ((++currentPosition) >= adapter.getItemCount()) {
                                 currentPosition = 0;
+                                recyclerView.scrollToPosition(currentPosition);
+                            } else {
+                                recyclerView.smoothScrollToPosition(currentPosition);
                             }
-                            recyclerView.scrollToPosition(currentPosition);
                             dotAdapter.setIndex(currentPosition);
                         }
                     });
@@ -294,8 +303,8 @@ public class RecyclerBanner<T> extends FrameLayout {
 
         @Override
         public BannerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            ImageView imageView=new ImageView(parent.getContext());
-            LayoutParams layoutParams=new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            ImageView imageView = new ImageView(parent.getContext());
+            LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             imageView.setLayoutParams(layoutParams);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             return new BannerHolder(imageView);
@@ -303,7 +312,9 @@ public class RecyclerBanner<T> extends FrameLayout {
 
         @Override
         public void onBindViewHolder(BannerHolder holder, @SuppressLint("RecyclerView") final int position) {
-            Glide.with(getContext()).load(imgUrls.get(position)).into(holder.imgview);
+            if (getContext()!=null){
+                Glide.with(getContext()).load(imgUrls.get(position)).into(holder.imgview);
+            }
             holder.itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -348,7 +359,7 @@ public class RecyclerBanner<T> extends FrameLayout {
 
         @Override
         public void onBindViewHolder(DotHolder holder, int position) {
-            holder.itemView.setBackgroundResource(position == index ? lightDot:normalDot);
+            holder.itemView.setBackgroundResource(position == index ? lightDot : normalDot);
         }
 
         @Override
@@ -360,6 +371,41 @@ public class RecyclerBanner<T> extends FrameLayout {
             DotHolder(View itemView) {
                 super(itemView);
             }
+        }
+    }
+
+    /**
+     * 控制滑动速度的LinearLayoutManager
+     */
+    private class ScrollSpeedLinearLayoutManger extends LinearLayoutManager {
+        private float MILLISECONDS_PER_INCH = 1f;
+
+        ScrollSpeedLinearLayoutManger(Context context) {
+            super(context, HORIZONTAL, false);
+        }
+
+        @Override
+        public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
+            LinearSmoothScroller linearSmoothScroller =
+                    new LinearSmoothScroller(recyclerView.getContext()) {
+                        @Override
+                        public PointF computeScrollVectorForPosition(int targetPosition) {
+                            return ScrollSpeedLinearLayoutManger.this
+                                    .computeScrollVectorForPosition(targetPosition);
+                        }
+
+                        //This returns the milliseconds it takes to
+                        //scroll one pixel.
+                        @Override
+                        protected float calculateSpeedPerPixel
+                        (DisplayMetrics displayMetrics) {
+                            return MILLISECONDS_PER_INCH / displayMetrics.density;
+                            //返回滑动一个pixel需要多少毫秒
+                        }
+
+                    };
+            linearSmoothScroller.setTargetPosition(position);
+            startSmoothScroll(linearSmoothScroller);
         }
     }
 
