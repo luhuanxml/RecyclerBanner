@@ -78,7 +78,7 @@ compile 'com.github.luhuanxml:RecyclerBanner:v1.0.0'  //自动轮播图片切换
         banner.stopAuto();
     }
 
-
 ```
 
+#### 新增加无限循环和向左滑动功能
         
