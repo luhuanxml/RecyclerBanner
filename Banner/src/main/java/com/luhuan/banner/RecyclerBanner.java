@@ -196,7 +196,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         ScrollSpeedLinearLayoutManger linearLayoutManager = new ScrollSpeedLinearLayoutManger(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setBackgroundColor(Color.WHITE);
-        List<T> images = new ArrayList<>();
+        final List<T> images = new ArrayList<>();
         adapter = new BannerAdapter(images);
         recyclerView.setAdapter(adapter);
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
@@ -206,8 +206,9 @@ public class RecyclerBanner<T> extends FrameLayout {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                currentPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastCompletelyVisibleItemPosition();
-                dotAdapter.setIndex(currentPosition);
+                currentPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                        .findLastCompletelyVisibleItemPosition();
+                dotAdapter. setIndex(currentPosition);
             }
 
             @Override
@@ -218,6 +219,11 @@ public class RecyclerBanner<T> extends FrameLayout {
             }
         });
         addView(recyclerView, recyclerParams);
+    }
+
+    public RecyclerBanner<T> canToLeft(){
+        recyclerView.scrollToPosition(10000*dotCount);
+        return this;
     }
 
     /**
@@ -282,7 +288,7 @@ public class RecyclerBanner<T> extends FrameLayout {
                                 currentPosition = 0;
                                 recyclerView.scrollToPosition(currentPosition);
                             } else {
-                                recyclerView.smoothScrollToPosition(currentPosition);
+                                recyclerView.smoothScrollToPosition(currentPosition%adapter.getItemCount());
                             }
                             dotAdapter.setIndex(currentPosition);
                         }
@@ -301,8 +307,9 @@ public class RecyclerBanner<T> extends FrameLayout {
             notifyDataSetChanged();
         }
 
+        @NonNull
         @Override
-        public BannerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public BannerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             ImageView imageView = new ImageView(parent.getContext());
             LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             imageView.setLayoutParams(layoutParams);
@@ -313,7 +320,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         @Override
         public void onBindViewHolder(BannerHolder holder, @SuppressLint("RecyclerView") final int position) {
             if (getContext()!=null){
-                Glide.with(getContext()).load(imgUrls.get(position)).into(holder.imgview);
+                Glide.with(getContext()).load(imgUrls.get(position%imgUrls.size())).into(holder.imgview);
             }
             holder.itemView.setOnClickListener(new OnClickListener() {
                 @Override
@@ -326,7 +333,7 @@ public class RecyclerBanner<T> extends FrameLayout {
 
         @Override
         public int getItemCount() {
-            return imgUrls == null ? 0 : imgUrls.size();
+            return imgUrls == null ? 0 : Integer.MAX_VALUE;
         }
 
         class BannerHolder extends RecyclerView.ViewHolder {
@@ -342,8 +349,9 @@ public class RecyclerBanner<T> extends FrameLayout {
     private class DotAdapter extends RecyclerView.Adapter<DotAdapter.DotHolder> {
         int index;
 
+        @NonNull
         @Override
-        public DotHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public DotHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View dotView = new View(getContext());
             LayoutParams layoutParams = new LayoutParams(dotSize, dotSize);
             layoutParams.setMargins(left, top, right, bottom);
@@ -353,7 +361,7 @@ public class RecyclerBanner<T> extends FrameLayout {
 
         //获得位置点亮对应的指示器
         void setIndex(int position) {
-            index = position;
+            index = position%getItemCount();
             notifyDataSetChanged();
         }
 
@@ -397,8 +405,7 @@ public class RecyclerBanner<T> extends FrameLayout {
                         //This returns the milliseconds it takes to
                         //scroll one pixel.
                         @Override
-                        protected float calculateSpeedPerPixel
-                        (DisplayMetrics displayMetrics) {
+                        protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
                             return MILLISECONDS_PER_INCH / displayMetrics.density;
                             //返回滑动一个pixel需要多少毫秒
                         }

@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
                 .setInterval(2000)
                 .setDotMargin(30, 30)
                 .setImages(list)
+                .canToLeft()
                 .setOnBannerItemClickListener(new RecyclerBanner.OnBannerItemClickListener<Integer>() {
                     @Override
                     public void onBannerItemClick(int itemPosition, Integer integer) {
