@@ -1,8 +1,7 @@
 package com.luhuan.simple;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.luhuan.banner.RecyclerBanner;
@@ -17,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        banner = (RecyclerBanner<Integer>) findViewById(R.id.banner);
+        banner = findViewById(R.id.banner);
         List<Integer> list = new ArrayList<>();
         list.add(R.mipmap.img01);
         list.add(R.mipmap.img02);
@@ -28,16 +27,15 @@ public class MainActivity extends AppCompatActivity {
         list.add(R.mipmap.img07);
         list.add(R.mipmap.img08);
         list.add(R.mipmap.img09);
-        banner.setDotSize(50)
+        banner.setDotSize(20)
                 .setInterval(2000)
-                .setDotMargin(30, 30)
+                .setDotMargin(20, 20)
                 .setImages(list)
                 .canToLeft()
-                .setOnBannerItemClickListener(new RecyclerBanner.OnBannerItemClickListener<Integer>() {
+                .setOnBannerItemClickListener(new RecyclerBanner.OnBannerItemClickListener() {
                     @Override
-                    public void onBannerItemClick(int itemPosition, Integer integer) {
-                        Toast.makeText(MainActivity.this, itemPosition + "", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(MainActivity.this, Main2Activity.class));
+                    public void onBannerItemClick(int itemPosition) {
+                        Toast.makeText(MainActivity.this, ""+itemPosition, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .startAuto();

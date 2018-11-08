@@ -33,7 +33,6 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -46,9 +45,9 @@ public class RecyclerBanner<T> extends FrameLayout {
     private static final String TAG = "RecyclerBanner";
 
     //item点击事件监听
-    private OnBannerItemClickListener<T> onBannerItemClickListener;
+    private OnBannerItemClickListener onBannerItemClickListener;
 
-    public RecyclerBanner<T> setOnBannerItemClickListener(OnBannerItemClickListener<T> onBannerItemClickListener) {
+    public RecyclerBanner<T> setOnBannerItemClickListener(OnBannerItemClickListener onBannerItemClickListener) {
         this.onBannerItemClickListener = onBannerItemClickListener;
         return this;
     }
@@ -325,8 +324,12 @@ public class RecyclerBanner<T> extends FrameLayout {
             holder.itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onBannerItemClickListener != null)
-                        onBannerItemClickListener.onBannerItemClick(position, imgUrls.get(position));
+                    if (onBannerItemClickListener != null){
+                        //点击的时候停止滑动，点击完了，滑动继续
+                        stopAuto();
+                        onBannerItemClickListener.onBannerItemClick(position%imgUrls.size());
+                        startAuto();
+                    }
                 }
             });
         }
@@ -416,7 +419,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         }
     }
 
-    public interface OnBannerItemClickListener<T> {
-        void onBannerItemClick(int itemPosition, T t);
+    public interface OnBannerItemClickListener {
+        void onBannerItemClick(int itemPosition);
     }
 }
