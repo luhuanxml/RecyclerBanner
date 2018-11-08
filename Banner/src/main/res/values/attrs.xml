@@ -12,4 +12,5 @@
         <attr name="light_dot_src" format="reference" />
         <attr name="normal_dot_src" format="reference" />
     </declare-styleable>
+
 </resources>

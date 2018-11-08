@@ -205,9 +205,28 @@ public class RecyclerBanner<T> extends FrameLayout {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                currentPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
-                        .findLastCompletelyVisibleItemPosition();
-                dotAdapter. setIndex(currentPosition);
+//                currentPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
+//                        .findLastCompletelyVisibleItemPosition();
+//                dotAdapter. setIndex(currentPosition);
+                //解决连续滑动时指示器不更新的问题
+                int firstReal = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+                View viewFirst = recyclerView.getLayoutManager().findViewByPosition(firstReal);
+                float width = getWidth();
+                if (width != 0 && viewFirst != null) {
+                    float right = viewFirst.getRight();
+                    float ratio = right / width;
+                    if (ratio > 0.8) {
+                        if (currentPosition != firstReal) {
+                            currentPosition = firstReal;
+                            dotAdapter.setIndex(currentPosition);
+                        }
+                    } else if (ratio < 0.2) {
+                        if (currentPosition!= firstReal + 1) {
+                            currentPosition = firstReal + 1;
+                            dotAdapter.setIndex(currentPosition);
+                        }
+                    }
+                }
             }
 
             @Override
@@ -317,7 +336,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         }
 
         @Override
-        public void onBindViewHolder(BannerHolder holder, @SuppressLint("RecyclerView") final int position) {
+        public void onBindViewHolder(@NonNull BannerHolder holder, @SuppressLint("RecyclerView") final int position) {
             if (getContext()!=null){
                 Glide.with(getContext()).load(imgUrls.get(position%imgUrls.size())).into(holder.imgview);
             }
@@ -336,7 +355,15 @@ public class RecyclerBanner<T> extends FrameLayout {
 
         @Override
         public int getItemCount() {
-            return imgUrls == null ? 0 : Integer.MAX_VALUE;
+            if (imgUrls==null){
+                return 0;
+            }else if (imgUrls.size()==0){
+                return 0;
+            }else if (imgUrls.size()==1){
+                return 1;
+            }else {
+                return  Integer.MAX_VALUE;
+            }
         }
 
         class BannerHolder extends RecyclerView.ViewHolder {
@@ -369,7 +396,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         }
 
         @Override
-        public void onBindViewHolder(DotHolder holder, int position) {
+        public void onBindViewHolder(@NonNull DotHolder holder, int position) {
             holder.itemView.setBackgroundResource(position == index ? lightDot : normalDot);
         }
 
@@ -389,7 +416,7 @@ public class RecyclerBanner<T> extends FrameLayout {
      * 控制滑动速度的LinearLayoutManager
      */
     private class ScrollSpeedLinearLayoutManger extends LinearLayoutManager {
-        private float MILLISECONDS_PER_INCH = 1f;
+        private float MILLISECONDS_PER_INCH = 0.4f;
 
         ScrollSpeedLinearLayoutManger(Context context) {
             super(context, HORIZONTAL, false);
