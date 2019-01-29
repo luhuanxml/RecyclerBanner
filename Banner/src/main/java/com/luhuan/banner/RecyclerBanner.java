@@ -21,10 +21,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,10 +87,10 @@ public class RecyclerBanner<T> extends FrameLayout {
     boolean isAuto = false; //默认不开启轮播图
 
     /**
-     * @param dotParentbackgroud 指示器条的背景色
+     * @param dotParentBackground 指示器条的背景色
      */
-    public RecyclerBanner<T> setDotLinebackgroud(@ColorRes Integer dotParentbackgroud) {
-        this.dotParentbackgroud = dotParentbackgroud;
+    public RecyclerBanner<T> setDotLinebackground(@ColorRes Integer dotParentBackground) {
+        this.dotParentbackgroud = dotParentBackground;
         return this;
     }
 
@@ -203,7 +200,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         LayoutParams recyclerParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 //                currentPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
 //                        .findLastCompletelyVisibleItemPosition();
@@ -230,7 +227,7 @@ public class RecyclerBanner<T> extends FrameLayout {
             }
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) stopAuto();/* 手放上去开始滑动 */
                 else if (newState == RecyclerView.SCROLL_STATE_IDLE) startAuto();/* 滑动停止 */
@@ -245,7 +242,7 @@ public class RecyclerBanner<T> extends FrameLayout {
     }
 
     /**
-     * 初始化指示器recyclerview
+     * 初始化指示器RecyclerView
      */
     private void initDots() {
         RecyclerView dotRecycler = new RecyclerView(getContext());
@@ -328,17 +325,18 @@ public class RecyclerBanner<T> extends FrameLayout {
         @NonNull
         @Override
         public BannerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            ImageView imageView = new ImageView(parent.getContext());
+            DesignImageView designImageView = new DesignImageView(parent.getContext());
             LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            imageView.setLayoutParams(layoutParams);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            return new BannerHolder(imageView);
+            layoutParams.setMargins(20,10,20,10);
+            designImageView.setLayoutParams(layoutParams);
+            designImageView.setRadius(10);
+            return new BannerHolder(designImageView);
         }
 
         @Override
         public void onBindViewHolder(@NonNull BannerHolder holder, @SuppressLint("RecyclerView") final int position) {
             if (getContext()!=null){
-                Glide.with(getContext()).load(imgUrls.get(position%imgUrls.size())).into(holder.imgview);
+                holder.designImageView.setImageResource((Integer) imgUrls.get(position%imgUrls.size()));
             }
             holder.itemView.setOnClickListener(new OnClickListener() {
                 @Override
@@ -367,11 +365,11 @@ public class RecyclerBanner<T> extends FrameLayout {
         }
 
         class BannerHolder extends RecyclerView.ViewHolder {
-            ImageView imgview;
+            DesignImageView designImageView;
 
             BannerHolder(View itemView) {
                 super(itemView);
-                imgview = (ImageView) itemView;
+                designImageView = (DesignImageView) itemView;
             }
         }
     }
@@ -406,7 +404,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         }
 
         class DotHolder extends RecyclerView.ViewHolder {
-            DotHolder(View itemView) {
+            DotHolder(View itemView)    {
                 super(itemView);
             }
         }
@@ -432,8 +430,7 @@ public class RecyclerBanner<T> extends FrameLayout {
                                     .computeScrollVectorForPosition(targetPosition);
                         }
 
-                        //This returns the milliseconds it takes to
-                        //scroll one pixel.
+                        //This returns the milliseconds it takes to scroll one pixel.
                         @Override
                         protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
                             return MILLISECONDS_PER_INCH / displayMetrics.density;
