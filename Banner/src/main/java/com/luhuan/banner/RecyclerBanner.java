@@ -17,7 +17,6 @@ import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -184,8 +183,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         typedArray.recycle();
     }
 
-    //提供一个对象,用于处理颜色的渐变过程
-//    private ArgbEvaluator argbEvaluator = new ArgbEvaluator();
+    int sumX = 0;
 
     /**
      * 初始化轮播recyclerview
@@ -205,7 +203,6 @@ public class RecyclerBanner<T> extends FrameLayout {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                Log.d("POSITION",dx+"");
 //                currentPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
 //                        .findLastCompletelyVisibleItemPosition();
 //                dotAdapter. setIndex(currentPosition);
@@ -227,8 +224,9 @@ public class RecyclerBanner<T> extends FrameLayout {
                             dotAdapter.setIndex(currentPosition);
                         }
                     }
-                    if (onBannerItemClickListener!=null){
-                        onBannerItemClickListener.onBannerScroll(currentPosition);
+                    if (onBannerItemClickListener != null) {
+                        sumX += dx;
+                        onBannerItemClickListener.onBannerScroll(currentPosition, sumX);
                     }
                 }
             }
@@ -237,7 +235,10 @@ public class RecyclerBanner<T> extends FrameLayout {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) stopAuto();/* 手放上去开始滑动 */
-                else if (newState == RecyclerView.SCROLL_STATE_IDLE) startAuto();/* 滑动停止 */
+                else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    sumX = 0;
+                    startAuto();/* 滑动停止 */
+                }
             }
         });
         addView(recyclerView, recyclerParams);
@@ -453,7 +454,8 @@ public class RecyclerBanner<T> extends FrameLayout {
 
     public interface OnBannerItemClickListener {
         void onBannerItemClick(int itemPosition);
-        void onBannerScroll(int itemPosition);
+
+        void onBannerScroll(int itemPosition, int color);
     }
 
 }
