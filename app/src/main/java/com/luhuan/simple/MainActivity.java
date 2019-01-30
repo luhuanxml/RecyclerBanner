@@ -1,7 +1,10 @@
 package com.luhuan.simple;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.luhuan.banner.RecyclerBanner;
@@ -11,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    LinearLayout linearParent;
     RecyclerBanner<Integer> banner;
     RecyclerMarquee marquee;
 
@@ -18,15 +22,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        linearParent = findViewById(R.id.linearParent);
         banner = findViewById(R.id.banner);
-        marquee=findViewById(R.id.marquee);
-        List<String> marquees =new ArrayList<>();
+        marquee = findViewById(R.id.marquee);
+        List<String> marquees = new ArrayList<>();
         marquees.add("1");
         marquees.add("2");
         marquees.add("3");
         marquees.add("4");
         marquees.add("5");
-        List<Integer> list = new ArrayList<>();
+        final List<Integer> list = new ArrayList<>();
         list.add(R.mipmap.img01);
         list.add(R.mipmap.img02);
         list.add(R.mipmap.img03);
@@ -44,16 +49,46 @@ public class MainActivity extends AppCompatActivity {
                 .setOnBannerItemClickListener(new RecyclerBanner.OnBannerItemClickListener() {
                     @Override
                     public void onBannerItemClick(int itemPosition) {
-                        Toast.makeText(MainActivity.this, ""+itemPosition, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "" + itemPosition, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onBannerScroll(int itemPosition) {
+                        int index = itemPosition % list.size();
+                        int color=Color.WHITE;
+                        switch (index) {
+                            case 0:
+                                color=Color.RED;
+                                break;
+                            case 1:
+                                color=Color.YELLOW;
+                                break;
+                            case 2:
+                                color=Color.GREEN;
+                                break;
+                            case 3:
+                                color=Color.BLUE;
+                                break;
+                            case 4:
+                                color=Color.DKGRAY;
+                                break;
+                            case 5:
+                                color=Color.GRAY;
+                                break;
+                            case 6:
+                                color=Color.BLACK;
+                                break;
+                        }
+                        linearParent.setBackgroundColor(color);
                     }
                 }).startAuto();
         marquee.setTextList(marquees)//.canToLeft()
                 .setOnMarqueeItemClickListener(new RecyclerMarquee.OnMarqueeItemClickListener() {
-            @Override
-            public void onBannerItemClick(int itemPosition) {
-                Toast.makeText(MainActivity.this, ""+itemPosition, Toast.LENGTH_SHORT).show();
-            }
-        }).startAuto();
+                    @Override
+                    public void onBannerItemClick(int itemPosition) {
+                        Toast.makeText(MainActivity.this, "" + itemPosition, Toast.LENGTH_SHORT).show();
+                    }
+                }).startAuto();
     }
 
     @Override

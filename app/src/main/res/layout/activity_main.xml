@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -10,19 +11,19 @@
     <com.luhuan.banner.RecyclerBanner
         android:id="@+id/banner"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:interval="3000"
-        app:dot_parentbackground="@android:color/black"
+        android:layout_height="160dp"
+        app:dot_marginbottom="0dp"
+        app:dot_marginleft="0dp"
+        app:dot_marginright="0dp"
+        app:dot_margintop="0dp"
         app:dot_parentalpha="0.8"
+        app:dot_parentbackground="@android:color/transparent"
         app:dot_size="6dp"
-        app:dot_marginbottom="6dp"
-        app:dot_margintop="6dp"
-        app:dot_marginleft="6dp"
-        app:dot_marginright="6dp"/>
+        app:interval="3000" />
 
     <com.luhuan.banner.RecyclerMarquee
         android:id="@+id/marquee"
         android:layout_width="match_parent"
-        android:layout_height="40dp"/>
+        android:layout_height="40dp" />
 
 </LinearLayout>

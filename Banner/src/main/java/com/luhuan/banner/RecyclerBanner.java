@@ -17,6 +17,7 @@ import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,6 @@ import io.reactivex.functions.Consumer;
  */
 
 public class RecyclerBanner<T> extends FrameLayout {
-    private static final String TAG = "RecyclerBanner";
 
     //item点击事件监听
     private OnBannerItemClickListener onBannerItemClickListener;
@@ -184,6 +184,9 @@ public class RecyclerBanner<T> extends FrameLayout {
         typedArray.recycle();
     }
 
+    //提供一个对象,用于处理颜色的渐变过程
+//    private ArgbEvaluator argbEvaluator = new ArgbEvaluator();
+
     /**
      * 初始化轮播recyclerview
      */
@@ -197,11 +200,12 @@ public class RecyclerBanner<T> extends FrameLayout {
         recyclerView.setAdapter(adapter);
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(recyclerView);
-        LayoutParams recyclerParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        final LayoutParams recyclerParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                Log.d("POSITION",dx+"");
 //                currentPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
 //                        .findLastCompletelyVisibleItemPosition();
 //                dotAdapter. setIndex(currentPosition);
@@ -218,10 +222,13 @@ public class RecyclerBanner<T> extends FrameLayout {
                             dotAdapter.setIndex(currentPosition);
                         }
                     } else if (ratio < 0.2) {
-                        if (currentPosition!= firstReal + 1) {
+                        if (currentPosition != firstReal + 1) {
                             currentPosition = firstReal + 1;
                             dotAdapter.setIndex(currentPosition);
                         }
+                    }
+                    if (onBannerItemClickListener!=null){
+                        onBannerItemClickListener.onBannerScroll(currentPosition);
                     }
                 }
             }
@@ -236,8 +243,8 @@ public class RecyclerBanner<T> extends FrameLayout {
         addView(recyclerView, recyclerParams);
     }
 
-    public RecyclerBanner<T> canToLeft(){
-        recyclerView.scrollToPosition(10000*dotCount);
+    public RecyclerBanner<T> canToLeft() {
+        recyclerView.scrollToPosition(10000 * dotCount);
         return this;
     }
 
@@ -256,6 +263,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         linearLayout.addView(dotRecycler, dotParams);
         LayoutParams linearParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         linearParams.gravity = Gravity.BOTTOM;
+        linearParams.setMargins(0, 0, 0, 25);
         linearLayout.setBackgroundColor(getResources().getColor(dotParentbackgroud));
         linearLayout.setAlpha(dotParentAlpha);
         addView(linearLayout, linearParams);
@@ -303,7 +311,7 @@ public class RecyclerBanner<T> extends FrameLayout {
                                 currentPosition = 0;
                                 recyclerView.scrollToPosition(currentPosition);
                             } else {
-                                recyclerView.smoothScrollToPosition(currentPosition%adapter.getItemCount());
+                                recyclerView.smoothScrollToPosition(currentPosition % adapter.getItemCount());
                             }
                             dotAdapter.setIndex(currentPosition);
                         }
@@ -327,7 +335,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         public BannerHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             DesignImageView designImageView = new DesignImageView(parent.getContext());
             LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            layoutParams.setMargins(20,10,20,10);
+            layoutParams.setMargins(50, 25, 50, 25);
             designImageView.setLayoutParams(layoutParams);
             designImageView.setRadius(10);
             return new BannerHolder(designImageView);
@@ -335,16 +343,16 @@ public class RecyclerBanner<T> extends FrameLayout {
 
         @Override
         public void onBindViewHolder(@NonNull BannerHolder holder, @SuppressLint("RecyclerView") final int position) {
-            if (getContext()!=null){
-                holder.designImageView.setImageResource((Integer) imgUrls.get(position%imgUrls.size()));
+            if (getContext() != null) {
+                holder.designImageView.setImageResource((Integer) imgUrls.get(position % imgUrls.size()));
             }
             holder.itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (onBannerItemClickListener != null){
+                    if (onBannerItemClickListener != null) {
                         //点击的时候停止滑动，点击完了，滑动继续
                         stopAuto();
-                        onBannerItemClickListener.onBannerItemClick(position%imgUrls.size());
+                        onBannerItemClickListener.onBannerItemClick(position % imgUrls.size());
                         startAuto();
                     }
                 }
@@ -353,14 +361,14 @@ public class RecyclerBanner<T> extends FrameLayout {
 
         @Override
         public int getItemCount() {
-            if (imgUrls==null){
+            if (imgUrls == null) {
                 return 0;
-            }else if (imgUrls.size()==0){
+            } else if (imgUrls.size() == 0) {
                 return 0;
-            }else if (imgUrls.size()==1){
+            } else if (imgUrls.size() == 1) {
                 return 1;
-            }else {
-                return  Integer.MAX_VALUE;
+            } else {
+                return Integer.MAX_VALUE;
             }
         }
 
@@ -389,7 +397,7 @@ public class RecyclerBanner<T> extends FrameLayout {
 
         //获得位置点亮对应的指示器
         void setIndex(int position) {
-            index = position%getItemCount();
+            index = position % getItemCount();
             notifyDataSetChanged();
         }
 
@@ -404,7 +412,7 @@ public class RecyclerBanner<T> extends FrameLayout {
         }
 
         class DotHolder extends RecyclerView.ViewHolder {
-            DotHolder(View itemView)    {
+            DotHolder(View itemView) {
                 super(itemView);
             }
         }
@@ -445,5 +453,7 @@ public class RecyclerBanner<T> extends FrameLayout {
 
     public interface OnBannerItemClickListener {
         void onBannerItemClick(int itemPosition);
+        void onBannerScroll(int itemPosition);
     }
+
 }
