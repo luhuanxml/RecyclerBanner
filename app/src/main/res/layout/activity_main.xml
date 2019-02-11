@@ -21,6 +21,13 @@
         app:dot_size="6dp"
         app:interval="3000" />
 
+    <com.luhuanxml.viewpagerbanner.banner.Banner
+        android:id="@+id/viewPagerBanner"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"/>
+
     <com.luhuan.banner.RecyclerMarquee
         android:id="@+id/marquee"
         android:layout_width="match_parent"
